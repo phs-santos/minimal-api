@@ -27,7 +27,7 @@ builder.Services.AddDbContext<DbContexto>(options => {
 var app = builder.Build();
 
 #region Home
-app.MapGet("/", () => Results.Json(new Home()));
+app.MapGet("/", () => Results.Json(new Home())).WithTags("Home");
 #endregion
 
 #region Admnistrador
@@ -37,7 +37,7 @@ app.MapPost("/admnistradores/login", ([FromBody] LoginDTO loginDTO, IAdmnistrado
     } else {
         return Results.Unauthorized();
     }
-});
+}).WithTags("Administradores");
 #endregion
 
 #region Veiculos
@@ -50,12 +50,12 @@ app.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoServico veic
     
     veiculoServico.Incluir(veiculo);
     return Results.Created($"/veiculos/{veiculo.Id}", veiculo);
-});
+}).WithTags("Veiculos");
 
 app.MapGet("/veiculos", ([FromQuery] int? pagina, IVeiculoServico veiculoServico) => {
     List<Veiculo> veiculos = veiculoServico.Todos(pagina);
     return Results.Ok(veiculos);
-});
+}).WithTags("Veiculos");
 #endregion
 
 #region App
