@@ -1,4 +1,4 @@
-using MinimalApi.DTOs;
+using MinimalApi.Dominio.DTOs;
 using MinimalApi.Dominio.Entidades;
 
 namespace MinimalApi.Dominio.Interfaces
