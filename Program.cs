@@ -20,8 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DbContexto>(options =>
 {
     options.UseMySql(
-        builder.Configuration.GetConnectionString("mysql"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mysql"))
+        builder.Configuration.GetConnectionString("MySql"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySql"))
     );
 });
 #endregion
@@ -99,7 +99,6 @@ app.MapGet("/administradores/{id}", ([FromRoute] int id, IAdministradorServico a
 
     return Results.Ok(adm);
 }).WithTags("Administradores");
-
 #endregion
 
 #region Veiculos

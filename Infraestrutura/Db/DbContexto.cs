@@ -28,7 +28,7 @@ namespace MinimalApi.Infraestrutura.Db
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var stringConexao = _configuracaoAppSettings.GetConnectionString("mysql")?.ToString();
+            var stringConexao = _configuracaoAppSettings.GetConnectionString("MySql")?.ToString();
             if (!optionsBuilder.IsConfigured)
             {
                 if (!string.IsNullOrEmpty(stringConexao))
