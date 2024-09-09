@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.OpenApi.Models;
 
 #region Builder
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,8 @@ builder.Services.AddAuthentication(option =>
     {
         ValidateLifetime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+        ValidateIssuer = false,
+        ValidateAudience = false
     };
 });
 
@@ -38,7 +41,33 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAdministradorServico, AdministradorServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen( options => {
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Aythorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Insira o token JWT desta maneira: Bearer {seu token}"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+    options.UseInlineDefinitionsForEnums();
+    options.SwaggerDoc("v1", new() { Title = "MinimalApi", Version = "v1" });
+});
 
 builder.Services.AddDbContext<DbContexto>(options =>
 {
@@ -52,7 +81,7 @@ builder.Services.AddDbContext<DbContexto>(options =>
 var app = builder.Build();
 
 #region Home
-app.MapGet("/", () => Results.Json(new Home())).WithTags("Home");
+app.MapGet("/", () => Results.Json(new Home())).AllowAnonymous().WithTags("Home");
 #endregion
 
 #region Administrador
@@ -92,7 +121,7 @@ app.MapPost("/administradores/login", ([FromBody] LoginDTO loginDTO, IAdministra
     {
         return Results.Unauthorized();
     }
-}).WithTags("Administradores");
+}).AllowAnonymous().WithTags("Administradores");
 
 app.MapPost("/administradores", ([FromBody] AdministradorDTO administradorDTO, IAdministradorServico administradorServico) =>
 {
