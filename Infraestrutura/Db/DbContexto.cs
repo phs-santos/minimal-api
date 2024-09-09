@@ -19,7 +19,7 @@ namespace MinimalApi.Infraestrutura.Db
             modelBuilder.Entity<Administrador>().HasData(
                 new Administrador {
                     Id = 1,
-                    Email = "admnistrador@teste.com",
+                    Email = "Administrador@teste.com",
                     Senha = "123456",
                     Perfil = "Adm"
                 }
